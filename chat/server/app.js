@@ -1,5 +1,6 @@
 console.log("Server started");
 var Set = require("collections/set");
+var Iterator = require("collections/iterator");
 
 var clients  = new Set();
 
@@ -8,10 +9,13 @@ var WebSocketServer = require('ws').Server
     wss.on('connection', function(ws) {
 
     	clients.add(ws);
-    	console.log("Client connected total=" + set.length);
+    	console.log("Client connected total=" + clients.length);
 
 	    ws.on('message', function(message) {
-	        console.log('received: %s', message);
+	        Iterator(clients.iterate()).forEach(function(c){
+		        console.log('received: %s', message);	        	
+	        	c.send(message);
+	        });
 	    });
 
 	    ws.on('close', function() {
